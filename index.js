@@ -104,3 +104,17 @@ app.post("/login", async (req, res) => {
 app.listen(port, () => {
   console.log(`서버 실행 중: http://localhost:${port}`);
 });
+
+// ----------------- 사용자 정보 조회 로직 -----------------------
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  if (!token) {
+    return res.json({ error: "로그인 필요" });
+  }
+  jwt.verify(token, secretKey, (err, info) => {
+    if (err) {
+      return res.json({ error: "로그인 필요" });
+    }
+    res.json(info);
+  });
+});
