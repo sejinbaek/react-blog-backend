@@ -66,6 +66,41 @@ app.post("/register", async (req, res) => {
   }
 });
 
+//------------------- 로그인 ----------------------
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const userDoc = await userModel.findOne({ username });
+    if (!userDoc) {
+      return res.status(401).json({ error: "없는 사용자 입니다." });
+    }
+
+    const passOk = bcrypt.compareSync(password, userDoc.password);
+    if (!passOk) {
+      return res.status(401).json({ error: "비밀번호가 틀렸습니다." });
+    } else {
+      const { _id, username } = userDoc;
+      const payload = { id: _id, username };
+      const token = jwt.sign(payload, secretKey, {
+        expiresIn: tokenLife,
+      });
+
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60,
+        })
+        .json({
+          id: userDoc._id,
+          username,
+        });
+    }
+  } catch (error) {
+    console.error("로그인 오류:", error);
+    res.status(500).json({ error: "로그인 실패" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`서버 실행 중: http://localhost:${port}`);
 });
