@@ -40,6 +40,15 @@ import jwt from "jsonwebtoken";
 const secretKey = process.env.JWT_SECRET;
 const tokenLife = process.env.JWT_EXPIRATION;
 
+// 쿠키 옵션을 일관되게 유지하기 위한 상수 정의
+const cookieOptions = {
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60, // 1시간
+  secure: process.env.NODE_ENV === "production", // HTTPS에서만 쿠키 전송
+  sameSite: "strict", // CSRF 방지
+  path: "/", // 모든 경로에서 쿠키 접근 가능
+};
+
 //----------------------------------------------
 app.post("/register", async (req, res) => {
   try {
@@ -119,12 +128,15 @@ app.get("/profile", (req, res) => {
   });
 });
 
-//----------------- 로그아웃 --------------------
+//----------------- 로그아웃 로직 --------------------
 app.post("/logout", (req, res) => {
+  // 쿠키 옵션을 로그인과 일관되게 유지하되, maxAge만 0으로 설정
+  const logoutCookieOptions = {
+    ...cookieOptions,
+    maxAge: 0,
+  };
+
   res
-    .cookie("token", "", {
-      httpOnly: true,
-      maxAge: 0,
-    })
+    .cookie("token", "", logoutCookieOptions)
     .json({ message: "로그아웃 되었음" });
 });
