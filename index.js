@@ -199,3 +199,30 @@ app.post("/postWrite", upload.single("files"), async (req, res) => {
     return res.status(500).json({ error: "서버 에러" });
   }
 });
+
+//---------- 글 목록 조회 API - 페이지네이션 추가 ------------------
+app.get("/postlist", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 0; // 페이지 번호 (0부터 시작)
+    const limit = parseInt(req.query.limit) || 3; // 한 페이지당 게시물 수 (기본값 3)
+    const skip = page * limit; // 건너뛸 게시물 수
+
+    // 총 게시물 수 조회
+    const total = await postModel.countDocuments();
+
+    // 페이지네이션을 적용하여 게시물 조회
+    const posts = await postModel
+      .find()
+      .sort({ createdAt: -1 }) // 최신순 정렬
+      .skip(skip)
+      .limit(limit);
+
+    // 마지막 페이지 여부 확인
+    const hasMore = total > skip + posts.length;
+
+    res.json({ posts, hasMor, total });
+  } catch (err) {
+    console.error("게시물 조회 오류:", err);
+    res.status(500).json({ error: "게시물 조회에 실패했습니다" });
+  }
+});
