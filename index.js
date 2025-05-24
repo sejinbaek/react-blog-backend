@@ -201,6 +201,7 @@ app.post("/postWrite", upload.single("files"), async (req, res) => {
 });
 
 //---------- 글 목록 조회 API - 페이지네이션 추가 ------------------
+// /postlist?page=0&limit=3처럼 요청
 app.get("/postlist", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 0; // 페이지 번호 (0부터 시작)
@@ -220,7 +221,7 @@ app.get("/postlist", async (req, res) => {
     // 마지막 페이지 여부 확인
     const hasMore = total > skip + posts.length;
 
-    res.json({ posts, hasMor, total });
+    res.json({ posts, hasMore, total });
   } catch (err) {
     console.error("게시물 조회 오류:", err);
     res.status(500).json({ error: "게시물 조회에 실패했습니다" });
