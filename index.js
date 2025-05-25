@@ -227,3 +227,18 @@ app.get("/postlist", async (req, res) => {
     res.status(500).json({ error: "게시물 조회에 실패했습니다" });
   }
 });
+
+//-------------------------- 글 상세 조회 API ----------------------------
+app.get("/post/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "게시물을 찾을 수 없습니다." });
+    }
+    res.json(post);
+  } catch (error) {
+    console.error("게시물 상세 조회 오류:", err);
+    res.status(500).json({ error: "게시물 상세 조회에 실패했습니다." });
+  }
+});
