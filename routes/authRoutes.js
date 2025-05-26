@@ -4,7 +4,9 @@ import {
   login,
   getProfile,
   logout,
+  deleteAccount,
 } from "../controllers/authController.js";
+import { authenticateToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
