@@ -51,6 +51,11 @@ app.get("/uploads/:filename", (req, res) => {
 // 데이터베이스 연결
 connectDB();
 
+// ✅ 헬스 체크 라우트 추가
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
 // 라우트 설정
 app.use("/auth", authRoutes); // /auth/register, /auth/login 등
 app.use("/posts", postRoutes); // /posts, /posts/:postId 등
