@@ -23,14 +23,25 @@ import { errorHandler } from "./utils/errorHandler.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
+const allowedOrigins = [
+  "https://react-blog-frontend-ev4g.vercel.app",
+  "http://localhost:5173",
+];
+
 // CORS 설정
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Postman, curl 등 Origin 없는 요청도 허용
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Not allowed by CORS: ${origin}`));
+      }
+    },
     credentials: true,
   })
 );
-
 // JSON 파싱 미들웨어
 app.use(express.json());
 
