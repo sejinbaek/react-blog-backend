@@ -25,7 +25,7 @@ export const createPost = async (req, res) => {
 export const getPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 0;
-    const limit = parseInt(req.query.limit) || 3;
+    const limit = parseInt(req.query.limit) || 6;
     const skip = page * limit;
 
     const total = await Post.countDocuments();

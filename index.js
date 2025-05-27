@@ -205,7 +205,7 @@ app.post("/postWrite", upload.single("files"), async (req, res) => {
 app.get("/postlist", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 0; // 페이지 번호 (0부터 시작)
-    const limit = parseInt(req.query.limit) || 3; // 한 페이지당 게시물 수 (기본값 3)
+    const limit = parseInt(req.query.limit) || 6; // 한 페이지당 게시물 수 (기본값 6)
     const skip = page * limit; // 앞에서부터 몇 개의 데이터를 건너뛸 것인지 결정
 
     // 총 게시물 수 조회
