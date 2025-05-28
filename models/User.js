@@ -9,8 +9,17 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.kakaoId;
+      },
     },
+    // 카카오 로그인을 위한 필드 추가
+    kakaoId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
+    profileImage: String,
   },
   {
     timestamps: true,
