@@ -83,11 +83,9 @@ export const kakaoCallback = async (req, res) => {
     <head>
       <meta charset="UTF-8" />
       <script>
-        // 로그인 후 바로 프론트엔드로 이동하고 새로고침
-        window.location.href = '${frontendURL}';
         window.onload = () => {
           setTimeout(() => {
-            window.location.reload();
+            window.location.href = '${frontendURL}';
           }, 100);
         };
       </script>
