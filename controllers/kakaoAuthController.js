@@ -74,10 +74,29 @@ export const kakaoCallback = async (req, res) => {
       expiresIn: tokenLife,
     });
 
-    // 쿠키에 토큰 저장 및 프론트엔드로 리다이렉트
-    res
-      .cookie("token", token, cookieOptions)
-      .redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/`);
+    // 프론트 URL (환경변수 fallback 포함)
+    const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    // 리다이렉트 + 새로고침을 위한 HTML 응답
+    res.cookie("token", token, cookieOptions).send(`
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <script>
+        // 로그인 후 바로 프론트엔드로 이동하고 새로고침
+        window.location.href = '${frontendURL}';
+        window.onload = () => {
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
+        };
+      </script>
+    </head>
+    <body>
+      로그인 처리 중입니다...
+    </body>
+  </html>
+`);
   } catch (error) {
     console.error("카카오 로그인 오류:", error);
     res
